@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --experimental-detect-module --test lib/store.test.js lib/metas.test.js lib/metas-delete.test.js lib/tabs.test.js lib/hoy.test.js lib/next-item.test.js lib/goal-sync.test.js lib/goal-pace.test.js lib/eventos.test.js lib/historial.test.js lib/demo-items.test.js lib/i18n.test.js"
+    "test": "node --experimental-detect-module --test lib/store.test.js lib/metas.test.js lib/metas-delete.test.js lib/tabs.test.js lib/hoy.test.js lib/next-item.test.js lib/goal-sync.test.js lib/goal-pace.test.js lib/eventos.test.js lib/historial.test.js lib/demo-items.test.js lib/i18n.test.js lib/limits.test.js"
   },
   "dependencies": {
     "@libsql/client": "^0.15.15",

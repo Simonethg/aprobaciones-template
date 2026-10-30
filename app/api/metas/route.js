@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { readJsonBody } from '@/lib/limits';
 import { whoIs } from '@/lib/auth';
 import { listGoals, newGoalFromInput, saveGoal } from '@/lib/metas';
 
@@ -14,7 +15,7 @@ export async function GET() {
 export async function POST(req) {
   if (!(await whoIs())) return unauthorized();
   let body;
-  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
+  try { body = await readJsonBody(req); } catch (e) { return NextResponse.json({ error: e.message }, { status: e.status || 400 }); }
   try {
     const goal = await saveGoal(newGoalFromInput(body || {}));
     return NextResponse.json({ goal }, { status: 201 });

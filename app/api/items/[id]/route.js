@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { readJsonBody } from '@/lib/limits';
 import { APPROVER_NAME } from '@/lib/actor';
 import { whoIs } from '@/lib/auth';
 import { appendEvento, decisionFromStatus } from '@/lib/eventos';
@@ -21,7 +22,7 @@ export async function PATCH(req, { params }) {
   const item = await getItem((await params).id);
   if (!item) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   let body;
-  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
+  try { body = await readJsonBody(req); } catch (e) { return NextResponse.json({ error: e.message }, { status: e.status || 400 }); }
   try {
     if (body && Object.prototype.hasOwnProperty.call(body, 'fechaLimite')) applyFechaLimite(item, body.fechaLimite, APPROVER_NAME);
     if (body?.status) applyStatus(item, body.status, body.nota, APPROVER_NAME);
@@ -50,7 +51,7 @@ export async function PUT(req, { params }) {
   const item = await getItem((await params).id);
   if (!item) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   let body;
-  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
+  try { body = await readJsonBody(req); } catch (e) { return NextResponse.json({ error: e.message }, { status: e.status || 400 }); }
   try {
     await saveItem(applyResubmit(item, body || {}));
     return NextResponse.json({ item });

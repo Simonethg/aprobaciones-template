@@ -13,7 +13,7 @@ export default function AddItem({ mode }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [form, setForm] = useState({
-    titulo: '', tipo: 'otro', proyecto: '', resumen: '', link: '', contenido: '', pasos: '', fechaLimite: '',
+    titulo: '', tipo: 'otro', proyecto: '', asignado: '', resumen: '', link: '', contenido: '', pasos: '', fechaLimite: '',
   });
 
   function set(k, v) { setForm((f) => ({ ...f, [k]: v })); }
@@ -26,6 +26,7 @@ export default function AddItem({ mode }) {
       titulo: form.titulo,
       tipo: task ? 'tarea-manual' : form.tipo,
       proyecto: form.proyecto,
+      asignado: form.asignado,
       resumen: form.resumen,
       link: form.link,
       contenido: form.contenido,
@@ -41,7 +42,7 @@ export default function AddItem({ mode }) {
       setErr(errorText(j.error) || t('add.fail'));
       return;
     }
-    setForm({ titulo: '', tipo: 'otro', proyecto: '', resumen: '', link: '', contenido: '', pasos: '', fechaLimite: '' });
+    setForm({ titulo: '', tipo: 'otro', proyecto: '', resumen: '', link: '', asignado: '', contenido: '', pasos: '', fechaLimite: '' });
     setOpen(false);
     router.refresh();
   }
@@ -70,6 +71,9 @@ export default function AddItem({ mode }) {
       <label htmlFor="add-proyecto">{t('add.project')}
         <input id="add-proyecto" data-testid="add-proyecto" value={form.proyecto} onChange={(e) => set('proyecto', e.target.value)} />
       </label>
+      <label htmlFor="add-asignado">{t('add.assignee')}
+        <input id="add-asignado" data-testid="add-asignado" maxLength={120} value={form.asignado} onChange={(e) => set('asignado', e.target.value)} />
+      </label>
       <label htmlFor="add-fecha">{t('add.deadline')}
         <input id="add-fecha" data-testid="add-fecha" type="datetime-local" value={form.fechaLimite} onChange={(e) => set('fechaLimite', e.target.value)} />
       </label>
@@ -80,13 +84,13 @@ export default function AddItem({ mode }) {
       ) : (
         <>
           <label htmlFor="add-resumen">{t('add.summary')}
-            <textarea id="add-resumen" data-testid="add-resumen" value={form.resumen} onChange={(e) => set('resumen', e.target.value)} />
+            <textarea id="add-resumen" data-testid="add-resumen" maxLength={2000} value={form.resumen} onChange={(e) => set('resumen', e.target.value)} />
           </label>
           <label htmlFor="add-link">{t('add.link')}
-            <input id="add-link" data-testid="add-link" type="url" inputMode="url" placeholder="https://" value={form.link} onChange={(e) => set('link', e.target.value)} />
+            <input id="add-link" data-testid="add-link" type="url" inputMode="url" placeholder="https://drive.google.com/…" maxLength={2000} value={form.link} onChange={(e) => set('link', e.target.value)} />
           </label>
           <label htmlFor="add-contenido">{t('add.body')}
-            <textarea id="add-contenido" data-testid="add-contenido" value={form.contenido} onChange={(e) => set('contenido', e.target.value)} />
+            <textarea id="add-contenido" data-testid="add-contenido" maxLength={2000} value={form.contenido} onChange={(e) => set('contenido', e.target.value)} />
           </label>
         </>
       )}

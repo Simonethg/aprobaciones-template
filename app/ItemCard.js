@@ -28,16 +28,13 @@ function DriveFilePreview({ id, tipo }) {
   return <DriveFrame src={frame} label={t('item.drivePreview')} hint={t('item.driveHint')} open={mediaTipo} />;
 }
 
-function Preview({ link, tipo, titulo }) {
+// Preview = the Drive/Docs embed in an iframe, loaded by the browser. Nothing is fetched or
+// proxied by the server, and other links (audio, video, images) are only opened, not embedded.
+function Preview({ link, tipo }) {
   const { t } = useI18n();
   if (!link) return null;
   let u;
   try { u = new URL(link); } catch { return null; }
-  const p = u.pathname.toLowerCase();
-  const label = titulo || t('item.preview');
-  if (/\.(mp3|wav|ogg|m4a|aac|flac|opus)$/.test(p)) return <div className="preview"><audio controls preload="none" src={link} aria-label={label} /></div>;
-  if (/\.(mp4|webm|mov|m4v)$/.test(p)) return <div className="preview"><video controls preload="metadata" playsInline src={link} aria-label={label} /></div>;
-  if (/\.(png|jpe?g|gif|webp|avif|svg)$/.test(p)) return <div className="preview"><img src={link} alt={label} loading="lazy" /></div>;
   const d = parseDriveLink(link);
   if (d?.kind === 'file') return <DriveFilePreview key={d.id} id={d.id} tipo={tipo} />;
   if (d) return <DriveFrame src={`https://docs.google.com/${d.kind}/d/${encodeURIComponent(d.id)}/preview`} label={t('item.docsPreview')} hint={t('item.driveHint')} />;
@@ -233,6 +230,7 @@ function TaskCard({ item, now }) {
           <div className="meta">
             <span className="chip tipo">{t('tipo.tarea')}</span>
             {item.proyecto && <span className="chip">📁 {item.proyecto}</span>}
+            {item.asignado && <span className="chip">👤 {item.asignado}</span>}
             <span className="chip">🤖 {item.bot}</span>
           </div>
           <Deadline key={item.fechaLimite || 'none'} item={item} now={now} onSave={(f) => patch({ fechaLimite: f })} busy={busy} />
@@ -305,7 +303,7 @@ function ApprovalCard({ item, now }) {
   const dl = deadlineInfo(item.fechaLimite, now, locale);
   return (
     <article tabIndex={-1} className={`card${dl && !closed ? ' card-dl-' + dl.level : ''}`} data-testid="item-card" data-item-id={item.id} data-status={item.status}>
-      <Preview link={item.link} tipo={item.tipo} titulo={item.titulo} />
+      <Preview link={item.link} tipo={item.tipo} />
       <DriveButtons item={item} />
       <div className="card-head">
         <h2>{item.titulo}</h2>

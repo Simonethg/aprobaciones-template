@@ -8,6 +8,22 @@ Decisions made in the UI are recorded under the name `Reviewer`. Change it in `l
 
 The sample data is fake: Project A, Newsletter and Videos. There are no real accounts, emails or links.
 
+## Only tasks, never content
+
+This app stores **tasks**, not the work itself. An item is a title, a status, a project, an assignee, a deadline, a short note, and a link to the real file in Google Drive (or any other `http(s)` URL).
+
+Why: the free tiers of Vercel, Netlify and Turso count function calls, bandwidth and storage. A video, an image or a long document sent through the API would use up that quota fast, and every page load would send it again. A task with a link is a few hundred bytes, so a class project can run for months without paying anything.
+
+What the server enforces:
+
+- Request bodies over **16 KB** are rejected (`413`). Only JSON is accepted, so no file uploads or multipart forms (`415`).
+- `data:` URIs and base64 blobs anywhere in the body are rejected (`422`). Upload the file to Drive and send the link instead.
+- `link` must be an `http://` or `https://` URL.
+- `resumen`, `contenido`, `nota` and replies are capped at **2,000 characters**. Steps (`pasos`) are capped at 20 lines of 300 characters.
+- Previews are the Drive/Docs embed in an iframe, loaded by the browser. The server never downloads, proxies or caches files or thumbnails.
+
+Media lives in Drive. Share the file with "anyone with the link" so the reviewer can open it.
+
 ## Features
 
 - **Approvals:** a queue where you approve, request changes or reject. Your comment stays on the item and in its history.
@@ -39,15 +55,16 @@ curl -s -X POST "$API/api/items" \
     "tipo": "post",
     "bot": "Bot Demo",
     "proyecto": "Newsletter",
-    "link": "https://example.com/demo/newsletter",
+    "asignado": "Reviewer",
+    "link": "https://drive.google.com/file/d/FILE_ID/view",
     "resumen": "Draft to approve",
-    "contenido": "Fictional text."
+    "contenido": "Check the subject line."
   }'
 ```
 
-The API keeps its original field names (`titulo` is the title, `tipo` the type, `proyecto` the project, `resumen` the summary, `contenido` the body). [`docs/API.md`](docs/API.md) has the full list of fields, types and statuses.
+The API keeps its original field names (`titulo` is the title, `tipo` the type, `proyecto` the project, `asignado` the assignee, `resumen` the summary, `contenido` a short note). [`docs/API.md`](docs/API.md) has the full list of fields, types and statuses, and [`docs/BOT-PROMPT.md`](docs/BOT-PROMPT.md) has instructions you can paste into your bot.
 
-For a video or a payment, upload the file wherever you like (Drive, for example), share it with anyone who has the link, and put that URL in `link`. The app doesn't keep the file. Drive and Docs links show the public embed. Any other URL shows up as a plain link.
+For a video or a payment, upload the file wherever you like (Drive, for example), share it with anyone who has the link, and put that URL in `link`. The app doesn't keep the file. Drive and Docs links show the Drive embed, loaded by your browser. Any other URL shows up as a plain link.
 
 Read the queue and the decisions:
 

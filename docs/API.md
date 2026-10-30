@@ -1,6 +1,18 @@
 # Bot API
 
-Bots talk to the app over plain JSON. The app never stores files: put a shared link in `link` (a Drive share link, for example).
+Bots talk to the app over plain JSON. **Send tasks, never content.** The app never stores files: upload the file to Drive and put the share link in `link`.
+
+## Limits
+
+| Rule | Response |
+|---|---|
+| Body over 16 KB | `413` |
+| Content-Type other than `application/json` (multipart, files) | `415` |
+| A `data:` URI or base64 blob in any field | `422` |
+| `link` that is not `http(s)` | `400` |
+| Bad JSON | `400` |
+
+Text fields are trimmed to these lengths: `titulo` 300, `resumen`, `contenido`, `nota` 2,000, `link` 2,000, `proyecto` and `asignado` 120, `pasos` 20 lines of 300.
 
 Every call sends:
 
@@ -20,9 +32,10 @@ The API keeps its original field names and status values, so existing bots keep 
 | `tipo` | item type, see below |
 | `bot` | name of the bot that created the item |
 | `proyecto` | project name, used by the project filter and history |
-| `link` | `http(s)` URL of the preview |
-| `resumen` | short summary |
-| `contenido` | full text |
+| `asignado` | assignee (optional, who has to act on it) |
+| `link` | `http(s)` URL of the content, usually a Drive share link. Drive/Docs links get an embedded preview |
+| `resumen` | short summary (max 2,000 characters) |
+| `contenido` | short note (max 2,000 characters). Not the full text: that goes in Drive |
 | `pasos` | steps of a manual task (array, or one step per line) |
 | `fechaLimite` | deadline, ISO 8601 with a time. No zone means Argentina time (UTC-3) |
 | `nota` | note or reason attached to a decision |
@@ -46,9 +59,10 @@ curl -s -X POST "$API/api/items" \
     "tipo": "post",
     "bot": "Bot Demo",
     "proyecto": "Newsletter",
-    "link": "https://example.com/demo/newsletter",
+    "asignado": "Reviewer",
+    "link": "https://drive.google.com/file/d/FILE_ID/view",
     "resumen": "Draft to approve",
-    "contenido": "Fictional text."
+    "contenido": "Check the subject line."
   }'
 ```
 

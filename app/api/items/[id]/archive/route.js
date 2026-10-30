@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { readJsonBody } from '@/lib/limits';
 import { whoIs } from '@/lib/auth';
 import { getItem, saveItem, applyArchive } from '@/lib/store';
 
@@ -13,7 +14,7 @@ export async function POST(req, { params }) {
   const item = await getItem((await params).id);
   if (!item) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   let body;
-  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
+  try { body = await readJsonBody(req); } catch (e) { return NextResponse.json({ error: e.message }, { status: e.status || 400 }); }
   try {
     const { changed } = applyArchive(item, body || {});
     if (changed) await saveItem(item);
