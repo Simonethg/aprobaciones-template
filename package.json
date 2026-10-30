@@ -1,0 +1,21 @@
+{
+  "name": "aprobaciones-template",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Workshop template: bots submit drafts, posts, videos and payments for a human to approve.",
+  "license": "MIT",
+  "author": "SimonethG",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "node --experimental-detect-module --test lib/store.test.js lib/metas.test.js lib/metas-delete.test.js lib/tabs.test.js lib/hoy.test.js lib/next-item.test.js lib/goal-sync.test.js lib/goal-pace.test.js lib/eventos.test.js lib/historial.test.js lib/demo-items.test.js lib/i18n.test.js"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.15",
+    "next": "^15",
+    "react": "^19",
+    "react-dom": "^19"
+  }
+}
