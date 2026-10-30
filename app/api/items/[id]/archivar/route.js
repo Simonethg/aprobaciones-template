@@ -8,16 +8,16 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req, { params }) {
   const who = await whoIs();
-  if (!who) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  if (!who) return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
   const item = await getItem((await params).id);
-  if (!item) return NextResponse.json({ error: 'No encontrado' }, { status: 404 });
+  if (!item) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   let body;
-  try { body = await req.json(); } catch { return NextResponse.json({ error: 'JSON inválido' }, { status: 400 }); }
+  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
   try {
     applyArchivar(item, body?.nota, who === 'session' ? APPROVER_NAME : 'ops');
     await saveItem(item);
     return NextResponse.json({ item });
   } catch (e) {
-    return NextResponse.json({ error: e.message }, { status: /Solo se puede|ya está/.test(e.message) ? 409 : 400 });
+    return NextResponse.json({ error: e.message }, { status: /only works on items|already archived/.test(e.message) ? 409 : 400 });
   }
 }

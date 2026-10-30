@@ -9,7 +9,7 @@ export default function ProjectHistory({ proyecto, onClose }) {
   const { t, locale, errorText } = useI18n();
   const [rows, setRows] = useState(null);
   const [err, setErr] = useState('');
-  const fmt = (iso) => new Date(iso).toLocaleString(locale === 'en' ? 'en-GB' : 'es-AR', { timeZone: TZ, dateStyle: 'short', timeStyle: 'short' });
+  const fmt = (iso) => new Date(iso).toLocaleString(locale === 'es' ? 'es-AR' : 'en-GB', { timeZone: TZ, dateStyle: 'short', timeStyle: 'short' });
 
   useEffect(() => {
     let alive = true;

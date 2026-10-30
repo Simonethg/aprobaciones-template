@@ -3,7 +3,7 @@ import { whoIs } from '@/lib/auth';
 import { listGoals, newGoalFromInput, saveGoal } from '@/lib/metas';
 
 export const dynamic = 'force-dynamic';
-const unauthorized = () => NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+const unauthorized = () => NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 
 export async function GET() {
   if (!(await whoIs())) return unauthorized();
@@ -14,7 +14,7 @@ export async function GET() {
 export async function POST(req) {
   if (!(await whoIs())) return unauthorized();
   let body;
-  try { body = await req.json(); } catch { return NextResponse.json({ error: 'JSON inválido' }, { status: 400 }); }
+  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
   try {
     const goal = await saveGoal(newGoalFromInput(body || {}));
     return NextResponse.json({ goal }, { status: 201 });

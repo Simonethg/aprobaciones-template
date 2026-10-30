@@ -17,7 +17,7 @@ export async function middleware(req) {
     return NextResponse.next({ request: { headers } });
   }
   if (isApi) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+    return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
   }
   const url = req.nextUrl.clone();
   url.pathname = '/login';

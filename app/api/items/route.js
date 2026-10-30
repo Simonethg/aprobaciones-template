@@ -3,14 +3,14 @@ import { whoIs } from '@/lib/auth';
 import { listItems, newItemFromInput, saveItem, STATUSES } from '@/lib/store';
 
 export const dynamic = 'force-dynamic';
-const unauthorized = () => NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+const unauthorized = () => NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 
 export async function GET(req) {
   if (!(await whoIs())) return unauthorized();
   // Default "todos" omits archivado. Bots list the archive with ?status=archivado.
   const status = new URL(req.url).searchParams.get('status') || 'todos';
   if (status !== 'todos' && !STATUSES.includes(status)) {
-    return NextResponse.json({ error: 'status inválido. Usá: ' + [...STATUSES, 'todos'].join(', ') }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid status. Use: ' + [...STATUSES, 'todos'].join(', ') }, { status: 400 });
   }
   const bot = new URL(req.url).searchParams.get('bot');
   let items = await listItems(status);
@@ -21,7 +21,7 @@ export async function GET(req) {
 export async function POST(req) {
   if (!(await whoIs())) return unauthorized();
   let body;
-  try { body = await req.json(); } catch { return NextResponse.json({ error: 'JSON inválido' }, { status: 400 }); }
+  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
   try {
     const item = await saveItem(newItemFromInput(body || {}));
     return NextResponse.json({ item }, { status: 201 });

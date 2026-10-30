@@ -10,7 +10,10 @@ import { LangSwitch, useI18n } from './I18n';
 import ProjectHistory from './ProjectHistory';
 import ThemeToggle from './ThemeToggle';
 
-// Minúsculas y sin tildes, para buscar "guion" y encontrar "Guión".
+// Test projects never show up in the project filter.
+const HIDDEN_PROJECTS = ['test', 'tests', 'pruebas'];
+
+// Lowercase without accents, so searching "guion" also finds "Guión".
 const norm = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
 function haystack(it) {
@@ -58,8 +61,8 @@ export default function Board({ items, goals, initialSection, initialTab, initia
   useEffect(() => { try { const v = localStorage.getItem(LS_KEY); if (v) setProj(v); } catch {} }, []);
   function pickProj(k) { setProj(k); setHist(false); try { localStorage.setItem(LS_KEY, k); } catch {} }
 
-  // Proyectos distintos (sin duplicados por mayúsculas/tildes); etiqueta = grafía más usada.
-  // The badge counts status "pendiente" only. "Pruebas" and projects with no open items stay hidden.
+  // Distinct projects (no duplicates from case or accents). The label is the most common spelling.
+  // The badge counts status "pendiente" only. A "Test" project and projects with no open items stay hidden.
   const projects = useMemo(() => {
     const m = new Map();
     for (const it of items) {
@@ -71,7 +74,7 @@ export default function Board({ items, goals, initialSection, initialTab, initia
       e.names[nm] = (e.names[nm] || 0) + 1;
       m.set(k, e);
     }
-    return [...m.values()].filter((e) => e.open > 0 && e.k !== 'pruebas')
+    return [...m.values()].filter((e) => e.open > 0 && !HIDDEN_PROJECTS.includes(e.k))
       .map((e) => ({ k: e.k, n: e.n, label: Object.entries(e.names).sort((a, b) => b[1] - a[1])[0][0] }))
       .sort((a, b) => (a.k === NO_PROJ) - (b.k === NO_PROJ) || a.label.localeCompare(b.label, locale));
   }, [items, t, locale]);

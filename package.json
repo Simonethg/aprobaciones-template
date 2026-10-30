@@ -2,7 +2,7 @@
   "name": "aprobaciones-template",
   "version": "1.0.0",
   "private": true,
-  "description": "Workshop template: bots submit drafts, posts, videos and payments for a human to approve.",
+  "description": "Approvals CRM template: bots submit drafts, posts, videos and payments, and a person approves them.",
   "license": "MIT",
   "author": "SimonethG",
   "engines": { "node": ">=20" },

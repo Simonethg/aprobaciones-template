@@ -5,7 +5,7 @@ import { listGoals, saveGoal } from '@/lib/metas';
 import { listAllItems } from '@/lib/store';
 
 export const dynamic = 'force-dynamic';
-const unauthorized = () => NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+const unauthorized = () => NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 
 // Recalculates only goals that have a real source. A missing source does not change the number.
 export async function POST() {

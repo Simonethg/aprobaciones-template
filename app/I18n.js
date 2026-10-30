@@ -5,7 +5,7 @@ import { detectLocale, t as translate, translateError } from '@/lib/i18n';
 const Ctx = createContext(null);
 
 export function I18nProvider({ children }) {
-  const [locale, setLocaleState] = useState('es');
+  const [locale, setLocaleState] = useState('en');
 
   useEffect(() => {
     let stored = null;
@@ -44,11 +44,11 @@ export function LangSwitch() {
   const { locale, setLocale, t } = useI18n();
   return (
     <div className="lang" role="group" aria-label={t('lang.group')}>
-      <button type="button" data-testid="lang-es" className={locale === 'es' ? 'on' : ''} aria-pressed={locale === 'es'} onClick={() => setLocale('es')}>
-        {t('lang.es')}
-      </button>
       <button type="button" data-testid="lang-en" className={locale === 'en' ? 'on' : ''} aria-pressed={locale === 'en'} onClick={() => setLocale('en')}>
         {t('lang.en')}
+      </button>
+      <button type="button" data-testid="lang-es" className={locale === 'es' ? 'on' : ''} aria-pressed={locale === 'es'} onClick={() => setLocale('es')}>
+        {t('lang.es')}
       </button>
     </div>
   );

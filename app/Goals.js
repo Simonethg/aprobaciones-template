@@ -14,8 +14,8 @@ function num(v) {
 
 function sourceLine(goal, sources, syncFuentes) {
   const synced = syncFuentes?.[goal.id];
-  if (synced && synced !== 'ok') return 'sin fuente conectada';
-  if (sources && sources[goal.id] === false && synced !== 'ok') return 'sin fuente conectada';
+  if (synced && synced !== 'ok') return 'no source connected';
+  if (sources && sources[goal.id] === false && synced !== 'ok') return 'no source connected';
   return '';
 }
 
@@ -83,7 +83,7 @@ function GoalCard({ goal, onSaved, onDeleted, sources, syncFuentes }) {
       {goal.indicador && <p className="goal-indicador">{goal.indicador}</p>}
       <p className="goal-caption" data-testid="goal-caption">{caption}</p>
       {pace && <p className="goal-pace" data-testid="goal-pace">{pace}</p>}
-      {fuente && <p className="goal-source" data-testid="goal-source">{fuente === 'sin fuente conectada' ? t('source.missing') : fuente}</p>}
+      {fuente && <p className="goal-source" data-testid="goal-source">{fuente === 'no source connected' ? t('source.missing') : fuente}</p>}
       <div
         className="goal-track"
         role="progressbar"

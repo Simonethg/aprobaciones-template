@@ -8,7 +8,7 @@ import { useI18n } from './I18n';
 
 const CLOSED = ['archivado', 'hecho', 'descartado'];
 const TZ = 'America/Argentina/Buenos_Aires';
-const fmt = (iso, locale) => new Date(iso).toLocaleString(locale === 'en' ? 'en-GB' : 'es-AR', { timeZone: TZ, dateStyle: 'short', timeStyle: 'short' });
+const fmt = (iso, locale) => new Date(iso).toLocaleString(locale === 'es' ? 'es-AR' : 'en-GB', { timeZone: TZ, dateStyle: 'short', timeStyle: 'short' });
 
 function DriveFrame({ src, label, open, hint }) {
   return (
@@ -44,7 +44,7 @@ function Preview({ link, tipo, titulo }) {
   return null;
 }
 
-// Botones «Abrir en Drive» para el link principal y los links de Drive del resumen.
+// "Open in Drive" buttons for the main link and any Drive links in the summary.
 function DriveButtons({ item }) {
   const { t } = useI18n();
   const links = [];
@@ -63,7 +63,7 @@ function DriveButtons({ item }) {
   );
 }
 
-// Fecha límite: badge + editor con selector de fecha y hora (hora argentina).
+// Deadline: badge plus an editor with a date and time picker (Argentina time).
 function Deadline({ item, now, onSave, busy }) {
   const { t, locale } = useI18n();
   const [edit, setEdit] = useState(false);
@@ -97,7 +97,7 @@ function Deadline({ item, now, onSave, busy }) {
   );
 }
 
-// Texto con URLs clicables.
+// Text with clickable URLs.
 function Linkify({ text }) {
   const parts = String(text || '').split(/(https?:\/\/[^\s<>"]+)/g);
   return parts.map((p, i) => {
@@ -107,7 +107,7 @@ function Linkify({ text }) {
   });
 }
 
-// Markdown mínimo: líneas "1. …" / "- …" como lista numerada; el resto como párrafos; URLs clicables.
+// Minimal Markdown: "1. …" and "- …" lines become a numbered list, the rest are paragraphs, URLs are clickable.
 function MarkdownLite({ text }) {
   const blocks = [];
   for (const raw of String(text || '').split(/\r?\n/)) {
@@ -203,7 +203,7 @@ function StatusNotes({ item, mode }) {
   );
 }
 
-// Tarea manual: solo título + vencimiento; al tocar se despliegan los pasos y las acciones.
+// Manual task: only title and due date. Tapping it opens the steps and actions.
 const TASK_ACTIONS = [
   ['hecho', 'task.done', 'btn-ok', 'task.doneHint'],
   ['descartado', 'task.discard', 'btn-no', 'task.discardHint'],
